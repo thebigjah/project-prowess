@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>··</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --ink: #d8d3c4;
+    --ink-soft: #888370;
+    --ink-faint: #4a4640;
+    --accent: #8a8275;
+    --hl: #c2a173;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.75;
+    min-height: 100vh;
+    padding: 3rem 1rem;
+    font-size: 14px;
+  }
+  .frame {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 3rem;
+    text-align: center;
+  }
+  pre {
+    background: #14140f;
+    border: 1px solid var(--ink-faint);
+    padding: 1.5rem 1.75rem;
+    overflow-x: auto;
+    color: var(--ink);
+    line-height: 1.6;
+    font-size: 13px;
+    margin: 1.5rem 0;
+  }
+  pre .c { color: var(--ink-faint); }
+  pre .kw { color: var(--hl); }
+  pre .str { color: var(--accent); }
+  .spec {
+    color: var(--ink-soft);
+    margin: 1.5rem 0;
+    line-height: 1.9;
+  }
+  .target {
+    background: #14140f;
+    border-left: 2px solid var(--hl);
+    padding: 1rem 1.25rem;
+    color: var(--hl);
+    letter-spacing: 0.1em;
+    margin: 1.5rem 0;
+    word-break: break-all;
+    font-size: 1rem;
+  }
+  .footer {
+    text-align: center;
+    color: var(--ink-faint);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    margin-top: 3rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="frame">
+
+<h1>ii &nbsp; · &nbsp; iii</h1>
+
+<div class="spec">
+Find the integer <strong style="color:var(--hl);">N</strong> such that <code>f(N)</code> equals the target below. <code>f</code> is given.
+</div>
+
+<pre><span class="c">// f: integer → 16-hex string. Three iterations of sha256, prefixed.</span>
+<span class="kw">function</span> f(n) {
+  <span class="kw">let</span> s = String(n);
+  <span class="kw">for</span> (<span class="kw">let</span> i = 0; i &lt; 3; i++) {
+    s = sha256(s + <span class="str">'prowess'</span>).slice(0, 16);
+  }
+  <span class="kw">return</span> s;
+}
+
+<span class="c">// Where sha256() returns the lowercase hex digest of the input string.</span>
+<span class="c">// (Use any standard library: Python hashlib, Node crypto, browser SubtleCrypto, etc.)</span></pre>
+
+<div class="spec">
+target:
+</div>
+
+<div class="target">0285543017b99610</div>
+
+<div class="spec">
+Once you have <strong style="color:var(--hl);">N</strong>:
+the next path is <code>/prowess/&lt;p&gt;/</code> where <code>p</code> is the first 16 hex of <code>sha256(String(N) + 'finish')</code>.
+</div>
+
+<div class="spec" style="color:var(--ink-faint);font-size:0.85rem;margin-top:2.5rem;">
+N is positive and under a hundred thousand. A loop is enough.
+</div>
+
+<div class="footer">— ebp · 2026</div>
+
+</div>
+
+</body>
+</html>
