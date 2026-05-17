@@ -25,7 +25,7 @@
     font-size: 15px;
   }
   .frame {
-    max-width: 560px;
+    max-width: 600px;
     margin: 0 auto;
     text-align: center;
   }
@@ -45,32 +45,112 @@
   }
   p { margin-bottom: 1.5rem; color: var(--ink); text-align: left; }
   p.center { text-align: center; }
-  .question {
+
+  form {
+    text-align: left;
+    margin-top: 2rem;
+  }
+  label {
+    display: block;
+    color: var(--accent);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin: 1.5rem 0 0.5rem;
+  }
+  input[type="text"], input[type="email"], input[type="url"], textarea {
+    width: 100%;
+    background: #14140f;
+    color: var(--ink);
+    border: 1px solid var(--ink-faint);
+    border-radius: 0;
+    padding: 0.75rem 1rem;
+    font-family: inherit;
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--hl);
+  }
+  textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+  .char-count {
+    color: var(--ink-faint);
+    font-size: 0.75rem;
+    text-align: right;
+    margin-top: 0.25rem;
+  }
+  .char-count.warn { color: var(--hl); }
+  .char-count.over { color: #c46a4a; }
+
+  button {
+    margin-top: 2rem;
+    width: 100%;
+    background: transparent;
+    color: var(--hl);
+    border: 1px solid var(--hl);
+    padding: 0.85rem 1.5rem;
+    font-family: inherit;
+    font-size: 0.85rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  button:hover {
+    background: var(--hl);
+    color: var(--bg);
+  }
+  button:disabled {
+    color: var(--ink-faint);
+    border-color: var(--ink-faint);
+    cursor: not-allowed;
+  }
+  button:disabled:hover { background: transparent; color: var(--ink-faint); }
+
+  .status {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    color: var(--hl);
+    text-align: center;
+    font-size: 0.9rem;
+    display: none;
+  }
+  .status.show { display: block; }
+  .status.error { color: #c46a4a; }
+
+  .success {
+    display: none;
+    text-align: center;
+    margin-top: 2rem;
+  }
+  .success.show { display: block; }
+  .success h2 {
+    color: var(--hl);
+    font-size: 0.95rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+  .receipt {
     background: #14140f;
     border-left: 2px solid var(--hl);
-    padding: 1.5rem 1.75rem;
-    margin: 2rem 0;
-    color: var(--ink);
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    color: var(--ink-soft);
+    font-size: 0.85rem;
     text-align: left;
-    font-style: italic;
+    word-break: break-all;
   }
-  .next {
-    margin-top: 3rem;
-    padding: 1.5rem;
-    border: 1px solid var(--hl);
-    color: var(--hl);
-  }
-  .next a {
-    color: var(--hl);
-    text-decoration: none;
-    letter-spacing: 0.1em;
-  }
-  .next a:hover { color: var(--ink); }
+
   .footer {
     color: var(--ink-faint);
     font-size: 0.7rem;
     letter-spacing: 0.2em;
     margin-top: 4rem;
+    text-align: center;
   }
 </style>
 </head>
@@ -92,30 +172,137 @@
 
 <h1>iii &nbsp; · &nbsp; end</h1>
 
-<p class="center">You made it through.</p>
+<p class="center" style="font-size:1.05rem;">You made it through.</p>
 
-<p>Three layers — base64 hidden in HTML source, Vigenère decode with a five-letter acrostic key, code comprehension with a sha256 chain. You're in the very small set of people who would even start, smaller set who would finish.</p>
+<p>Three layers — base64 hidden in source, Vigenère decode with a five-letter acrostic, code comprehension with a sha256 chain. You're in the very small set of people who would even start, and a smaller set who would finish.</p>
 
-<p>This was the v0.1 of Project Prowess. There will be more layers — modern crypto (RSA, ECC), LLM prompt-engineering tests, multimodal embedding puzzles, OSINT via git history, distributed-tech challenges. The point of v0.1 is to find the people who would bother solving v0.1.</p>
+<p>This is v0.1. There will be more layers: modern crypto (RSA, ECC), LLM prompt-engineering tests, multimodal embedding puzzles, OSINT through git history, distributed-tech challenges. The point of v0.1 is to find the people who would bother solving v0.1.</p>
 
-<p>If that's you, the next move is yours.</p>
+<p>Tell me about yourself. Answers land directly with me — no email to send, no inbox to hope I check.</p>
 
-<div class="question">
-Tell me, in 200 words or less:<br>
-&middot; what skill you most want to be sharpening over the next year<br>
-&middot; one concrete thing you've shipped (link)<br>
-&middot; what made you keep going through this puzzle when you could have stopped
+<form id="submission-form">
+
+  <label for="name">name</label>
+  <input type="text" id="name" name="name" required maxlength="100" placeholder="how you'd like to be called">
+
+  <label for="email">email or signal handle</label>
+  <input type="text" id="email" name="email" required maxlength="200" placeholder="how I reach back">
+
+  <label for="skill">the skill you most want to be sharpening over the next year</label>
+  <input type="text" id="skill" name="skill" required maxlength="200">
+
+  <label for="shipped">one concrete thing you've shipped — link please</label>
+  <input type="url" id="shipped" name="shipped" required maxlength="500" placeholder="github / live URL / writeup">
+
+  <label for="why">what made you keep going through this puzzle when you could have stopped</label>
+  <textarea id="why" name="why" required maxlength="1500" rows="5"></textarea>
+  <div class="char-count" id="why-count">0 / 1500</div>
+
+  <button type="submit" id="submit-btn">submit</button>
+
+</form>
+
+<div class="status" id="status"></div>
+
+<div class="success" id="success">
+  <h2>received</h2>
+  <p style="text-align:center;">I read each one personally. If your response stands out, you will hear from me directly.</p>
+  <p style="text-align:center;color:var(--ink-soft);font-size:0.85rem;">There is no public deadline.</p>
+  <div class="receipt" id="receipt"></div>
 </div>
-
-<p>Send to <strong style="color:var(--hl);">prowess [at] purcellventures [dot] co</strong>. Subject line: <code style="color:var(--hl);">FORGE 9024</code>. (The subject proves you solved it; the message proves you're worth talking to.)</p>
-
-<p class="center" style="margin-top:3rem;color:var(--ink-soft);">I will personally read every email that arrives with the correct subject line. The top responses get a 30-minute call.</p>
-
-<p class="center" style="margin-top:2rem;font-size:0.85rem;color:var(--ink-faint);">No deadline. No public reveal. The door stays open as long as it stays open.</p>
 
 <div class="footer">— elijah purcell · 2026 · purcellventures.co</div>
 
 </div>
+
+<script>
+'use strict';
+const NTFY_TOPIC = 'prowess-625370c90178bbc65dc8ba6f';
+const NTFY_URL = 'https://ntfy.sh/' + NTFY_TOPIC;
+
+const form = document.getElementById('submission-form');
+const status = document.getElementById('status');
+const success = document.getElementById('success');
+const submitBtn = document.getElementById('submit-btn');
+const receipt = document.getElementById('receipt');
+const whyTextarea = document.getElementById('why');
+const whyCount = document.getElementById('why-count');
+
+whyTextarea.addEventListener('input', () => {
+  const len = whyTextarea.value.length;
+  whyCount.textContent = len + ' / 1500';
+  whyCount.className = 'char-count' + (len > 1400 ? ' warn' : '') + (len > 1500 ? ' over' : '');
+});
+
+function showStatus(msg, isError) {
+  status.textContent = msg;
+  status.className = 'status show' + (isError ? ' error' : '');
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  submitBtn.disabled = true;
+  showStatus('sending...');
+
+  const data = new FormData(form);
+  const payload = {
+    name: data.get('name').trim(),
+    contact: data.get('email').trim(),
+    skill: data.get('skill').trim(),
+    shipped: data.get('shipped').trim(),
+    why: data.get('why').trim(),
+    ts: new Date().toISOString(),
+    ua: navigator.userAgent,
+  };
+
+  // Format as readable ntfy message
+  const title = 'Prowess: ' + payload.name;
+  const body = [
+    'NAME: ' + payload.name,
+    'CONTACT: ' + payload.contact,
+    'SKILL FOCUS: ' + payload.skill,
+    'SHIPPED: ' + payload.shipped,
+    '',
+    'WHY KEPT GOING:',
+    payload.why,
+    '',
+    '---',
+    'submitted ' + payload.ts,
+  ].join('\n');
+
+  // Save a local backup in solver's browser
+  try {
+    const log = JSON.parse(localStorage.getItem('prowess.submissions.v1') || '[]');
+    log.push(payload);
+    localStorage.setItem('prowess.submissions.v1', JSON.stringify(log));
+  } catch {}
+
+  // Build receipt hash so solver has proof
+  const receiptText = btoa(unescape(encodeURIComponent(JSON.stringify({
+    name: payload.name, ts: payload.ts,
+  })))).slice(0, 32);
+
+  try {
+    const res = await fetch(NTFY_URL, {
+      method: 'POST',
+      headers: {
+        'Title': title.replace(/[^\x20-\x7E]/g, '?').slice(0, 200),
+        'Priority': '4',
+        'Tags': 'gear,prowess',
+      },
+      body: body,
+    });
+    if (!res.ok) throw new Error('ntfy returned ' + res.status);
+
+    form.style.display = 'none';
+    success.classList.add('show');
+    receipt.innerHTML = '<strong style="color:var(--hl);">your receipt:</strong><br>' + receiptText + '<br><br>save this if you want a record of your submission. it is also in this browser\'s storage.';
+  } catch (err) {
+    showStatus('Submission failed: ' + err.message + '. Your answers are saved locally in this browser. Try again, or contact elijah another way.', true);
+    submitBtn.disabled = false;
+  }
+});
+</script>
 
 </body>
 </html>

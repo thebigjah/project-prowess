@@ -20,7 +20,9 @@ Every layer's solution IS the URL of the next layer. You cannot skip ahead becau
 - **Layer 0 → 1:** Layer 0 hides `L2NiYmYyNjQzNTU5YWYwZjQv` (base64 of `/cbbf2643559af0f4/`) in an HTML comment. Solver views source.
 - **Layer 1 → 2:** Layer 1 shows a poem with first-letter acrostic spelling `FORGE` (the Vigenère key) plus a ciphertext `UFFIIJR KU TWCNKWX GCGWM 2QV8286I706FFQS1`. Decrypting yields `PROCEED TO PROWESS SLASH 2CE8286C706BACB1`, which is the Layer 2 path.
 - **Layer 2 → final:** Layer 2 shows a JavaScript function `f(n) = sha256(sha256(sha256(str(n)+"prowess").slice(0,16)+"prowess").slice(0,16)+"prowess").slice(0,16)` and target `0285543017b99610`. Solver finds N=9024 by brute force, then computes `sha256("9024finish").slice(0,16)` = `6e8ef5c841cdc748` for the final path.
-- **Final → contact:** Final page asks for a 200-word reply with subject line `FORGE 9024` (proves they solved L1 and L2). Elijah personally reviews replies.
+- **Final → log:** Final page is a form that POSTs each submission as an ntfy push to topic `prowess-625370c90178bbc65dc8ba6f`. Elijah subscribes to that topic in his ntfy app and gets every submission as a persistent notification. Solver also keeps a local copy in their browser's localStorage with a receipt hash. No email-sending step; submissions auto-log.
+
+**Important:** Elijah must subscribe to `ntfy.sh/prowess-625370c90178bbc65dc8ba6f` in his ntfy app (one-tap) before launch, or submissions silently expire from ntfy's 12-hr default retention. Once subscribed, the ntfy app keeps history on his device permanently.
 
 ## How to add more layers
 
