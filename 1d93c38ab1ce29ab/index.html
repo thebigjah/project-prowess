@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>·····</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --ink: #d8d3c4;
+    --ink-soft: #888370;
+    --ink-faint: #4a4640;
+    --accent: #8a8275;
+    --hl: #c2a173;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.8;
+    min-height: 100vh;
+    padding: 3rem 1rem;
+    font-size: 14px;
+  }
+  .frame {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2.5rem;
+    text-align: center;
+  }
+  .spec {
+    color: var(--ink-soft);
+    margin: 1.5rem 0;
+    line-height: 1.95;
+  }
+  .spec code {
+    color: var(--hl);
+  }
+  .target {
+    background: #14140f;
+    border-left: 2px solid var(--hl);
+    padding: 1rem 1.5rem;
+    margin: 1.5rem 0;
+    color: var(--hl);
+    letter-spacing: 0.05em;
+    word-break: break-all;
+    font-size: 1rem;
+  }
+  .target a {
+    color: var(--hl);
+    text-decoration: none;
+  }
+  .target a:hover { text-decoration: underline; }
+  .footer {
+    text-align: center;
+    color: var(--ink-faint);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    margin-top: 3rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="frame">
+
+<h1>v &nbsp; · &nbsp; vi</h1>
+
+<div class="spec">
+A string is hidden inside the git history of a public repository. The string is no longer in any current file. It was committed, then later overwritten and the file was deleted.
+</div>
+
+<div class="spec">
+The repository:
+</div>
+
+<div class="target">
+  <a href="https://github.com/thebigjah/prowess-archive" target="_blank" rel="noopener noreferrer">github.com/thebigjah/prowess-archive</a>
+</div>
+
+<div class="spec">
+Recover the string. It looks like <code>WORD-NNNN-WORD</code>.
+</div>
+
+<div class="spec" style="color:var(--ink-faint);font-size:0.85rem;margin-top:2rem;line-height:2;">
+You will want some combination of:
+<br>· <code>git clone</code>
+<br>· <code>git log --all --oneline</code>
+<br>· <code>git log -p -- &lt;path&gt;</code> (shows all history of a path including deletions)
+<br>· <code>git log -S &lt;pattern&gt; --all</code> (pickaxe: find commits that added or removed a string)
+<br>· <code>git show &lt;sha&gt;</code>
+</div>
+
+<div class="spec" style="margin-top:2rem;">
+The next path is <code>/prowess/&lt;p&gt;/</code> where <code>p</code> is the first 16 hex of <code>sha256(string + 'finish')</code>. Pass the string exactly as it appears in history — same case, same hyphens.
+</div>
+
+<div class="footer">— ebp · 2026</div>
+
+</div>
+
+</body>
+</html>
