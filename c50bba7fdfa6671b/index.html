@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>····</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --ink: #d8d3c4;
+    --ink-soft: #888370;
+    --ink-faint: #4a4640;
+    --accent: #8a8275;
+    --hl: #c2a173;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.75;
+    min-height: 100vh;
+    padding: 3rem 1rem;
+    font-size: 14px;
+  }
+  .frame {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2.5rem;
+    text-align: center;
+  }
+  .spec {
+    color: var(--ink-soft);
+    margin: 1.5rem 0;
+    line-height: 1.9;
+  }
+  .spec code {
+    color: var(--hl);
+  }
+  .key-block {
+    background: #14140f;
+    border: 1px solid var(--ink-faint);
+    padding: 1.5rem 1.75rem;
+    margin: 1rem 0;
+    font-size: 12.5px;
+    line-height: 1.7;
+    word-break: break-all;
+  }
+  .key-block .label {
+    color: var(--accent);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.4rem;
+    display: block;
+  }
+  .key-block .val {
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+  .key-block .val:last-child { margin-bottom: 0; }
+  .footer {
+    text-align: center;
+    color: var(--ink-faint);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    margin-top: 3rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="frame">
+
+<h1>iv &nbsp; · &nbsp; v</h1>
+
+<div class="spec">
+A 188-bit RSA public key and a ciphertext encrypted under that key. Recover the plaintext.
+</div>
+
+<div class="key-block">
+  <span class="label">modulus n</span>
+  <div class="val">196456434766982447798224546546131901800177712942875963869</div>
+  <span class="label">public exponent e</span>
+  <div class="val">65537</div>
+  <span class="label">ciphertext c</span>
+  <div class="val">120443614611727181750341042954888168413859478725540147206</div>
+</div>
+
+<div class="spec">
+The plaintext, written as a lowercase 16-character hexadecimal string with leading zeroes if needed, IS the next path: <code>/prowess/&lt;plaintext_hex&gt;/</code>.
+</div>
+
+<div class="spec" style="color:var(--ink-faint);font-size:0.85rem;margin-top:2.5rem;line-height:2;">
+Hints if you need them:
+<br>· 188 bits is small enough that <code>sympy.factorint(n)</code> or <code>msieve</code> finishes in seconds
+<br>· <code>factordb.com</code> may or may not have it cached. It won't always be there.
+<br>· No tricks beyond textbook RSA. Standard PKCS#1 v1.5 padding not used; the plaintext was encoded as a raw integer (hex-to-int).
+</div>
+
+<div class="footer">— ebp · 2026</div>
+
+</div>
+
+</body>
+</html>
