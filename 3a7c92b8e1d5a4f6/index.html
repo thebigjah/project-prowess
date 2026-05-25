@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PROWESS · XI</title>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0c0a08;
+    color: #d4af37;
+    font-family: 'Courier New', 'Consolas', monospace;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 48px 24px 96px;
+    line-height: 1.65;
+    font-size: 15px;
+  }
+  h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 36px;
+    letter-spacing: 0.18em;
+    font-weight: 400;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #3a3530;
+  }
+  p { margin-bottom: 16px; }
+  p.dim { color: #524d45; font-size: 13px; }
+  .status {
+    padding: 24px;
+    background: #1a1612;
+    border: 1px solid #3a3530;
+    margin-bottom: 24px;
+    font-size: 14px;
+  }
+  .status strong { color: #d4af37; font-weight: 400; }
+  .half-box {
+    padding: 20px 24px;
+    background: #1a1612;
+    border-left: 3px solid #d4af37;
+    margin: 14px 0;
+    font-size: 13px;
+    word-break: break-all;
+  }
+  .half-box .label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    color: #524d45;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .half-box .value {
+    color: #f5f0e0;
+    font-family: 'Courier New', monospace;
+  }
+  button {
+    background: #d4af37;
+    color: #0c0a08;
+    border: none;
+    padding: 14px 32px;
+    font-family: inherit;
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 0;
+  }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .pulse {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #d4af37;
+    border-radius: 50%;
+    animation: pulse 1.4s ease-in-out infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<h1>PROWESS &middot; XI</h1>
+
+<p>This layer cannot be solved alone.</p>
+<p>You must find another solver who has reached Layer XI independently. Both of you must visit this page from different IPs within the same window.</p>
+<p class="dim">When two distinct solvers connect, each receives one half of a key. The protocol for combining the halves is not documented. Figure it out.</p>
+
+<div class="status" id="status">
+  <span class="pulse"></span><strong>Click below to join the waiting pool.</strong>
+</div>
+
+<button id="join-btn" onclick="join()">JOIN THE PAIR</button>
+
+<script>
+  const API_URL = 'https://purcellventures.co/api/prowess/cooperative-key';
+  let sessionId = localStorage.getItem('prowess-xi-session');
+  if (!sessionId) {
+    sessionId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'sid-' + Date.now() + '-' + Math.random().toString(36).slice(2);
+    localStorage.setItem('prowess-xi-session', sessionId);
+  }
+
+  const statusDiv = document.getElementById('status');
+  const joinBtn = document.getElementById('join-btn');
+  let polling = false;
+
+  async function join() {
+    joinBtn.disabled = true;
+    statusDiv.innerHTML = '<span class="pulse"></span><strong>Connecting...</strong>';
+
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId })
+      });
+      const data = await res.json();
+
+      if (data.status === 'paired') {
+        statusDiv.innerHTML = '<strong>Paired.</strong> Your half follows. The other solver received the complementary half elsewhere. Coordinate. Combine. Compute.';
+        const halfDiv = document.createElement('div');
+        halfDiv.className = 'half-box';
+        halfDiv.innerHTML = '<span class="label">Your half (32 hex chars)</span><span class="value">' + data.yourHalf + '</span>';
+        statusDiv.appendChild(halfDiv);
+
+        const hint = document.createElement('p');
+        hint.className = 'dim';
+        hint.style.marginTop = '20px';
+        hint.textContent = data.hint || '';
+        statusDiv.appendChild(hint);
+      } else if (data.status === 'waiting') {
+        statusDiv.innerHTML = '<span class="pulse"></span><strong>In the pool.</strong> Waiting for another solver from a different IP. ' + (data.activeWaiters || 1) + ' solver(s) waiting now. Polling every 5 seconds.';
+        polling = true;
+        setTimeout(poll, 5000);
+      } else if (data.error) {
+        statusDiv.innerHTML = '<strong>Error:</strong> ' + data.error;
+        joinBtn.disabled = false;
+      }
+    } catch (e) {
+      statusDiv.innerHTML = '<strong>Connection failed.</strong> Try again.';
+      joinBtn.disabled = false;
+    }
+  }
+
+  async function poll() {
+    if (!polling) return;
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId })
+      });
+      const data = await res.json();
+      if (data.status === 'paired') {
+        polling = false;
+        statusDiv.innerHTML = '<strong>Paired.</strong> Your half follows. The other solver received the complementary half elsewhere. Coordinate. Combine. Compute.';
+        const halfDiv = document.createElement('div');
+        halfDiv.className = 'half-box';
+        halfDiv.innerHTML = '<span class="label">Your half (32 hex chars)</span><span class="value">' + data.yourHalf + '</span>';
+        statusDiv.appendChild(halfDiv);
+
+        const hint = document.createElement('p');
+        hint.className = 'dim';
+        hint.style.marginTop = '20px';
+        hint.textContent = data.hint || '';
+        statusDiv.appendChild(hint);
+      } else {
+        statusDiv.querySelector('strong').textContent = 'Still in the pool. ' + (data.activeWaiters || 1) + ' solver(s) waiting. Polling...';
+        setTimeout(poll, 5000);
+      }
+    } catch (e) {
+      setTimeout(poll, 10000);
+    }
+  }
+</script>
+
+</body>
+</html>
