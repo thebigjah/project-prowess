@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PROWESS · X</title>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0c0a08;
+    color: #d4af37;
+    font-family: 'Courier New', 'Consolas', monospace;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 48px 24px 96px;
+    line-height: 1.65;
+    font-size: 15px;
+  }
+  h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 36px;
+    letter-spacing: 0.18em;
+    font-weight: 400;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #3a3530;
+  }
+  p { margin-bottom: 16px; }
+  p.dim { color: #524d45; font-size: 13px; }
+  ul { margin-bottom: 18px; padding-left: 24px; color: #f5f0e0; }
+  ul li { margin-bottom: 6px; font-size: 14px; }
+  textarea {
+    width: 100%;
+    min-height: 420px;
+    background: #1a1612;
+    color: #f5f0e0;
+    border: 1px solid #3a3530;
+    padding: 16px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.6;
+    border-radius: 0;
+    resize: vertical;
+  }
+  button {
+    background: #d4af37;
+    color: #0c0a08;
+    border: none;
+    padding: 14px 32px;
+    font-family: inherit;
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 14px;
+    border-radius: 0;
+  }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .count {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: #524d45;
+    margin-top: 8px;
+  }
+  .count strong { color: #d4af37; font-weight: 400; }
+  .feedback {
+    background: #1a1612;
+    border-left: 3px solid #d4af37;
+    padding: 24px;
+    margin-top: 32px;
+    white-space: pre-wrap;
+    color: #f5f0e0;
+    font-size: 14px;
+  }
+  .feedback strong { color: #d4af37; font-weight: 400; }
+  a { color: #d4af37; }
+</style>
+</head>
+<body>
+
+<h1>PROWESS &middot; X</h1>
+
+<p>Write a 1,000-word defense of the position that "It is morally permissible to seek knowledge of secrets."</p>
+
+<p>Your defense must address:</p>
+<ul>
+  <li>Proverbs 25:2 (&ldquo;It is the glory of God to conceal a thing, but the honor of kings to search out a matter&rdquo;)</li>
+  <li>The Cicada 3301 thesis that intelligence agencies recruit via puzzles</li>
+  <li>The objection that puzzles of this kind are gnostic &mdash; that only the initiated may know</li>
+  <li>Why someone who would solve this puzzle is or is not the kind of person who should be entrusted with what comes next</li>
+</ul>
+
+<p>Submit when ready. Your defense will be evaluated against six rubric criteria. A score of 5/6 or better unlocks the path. The criteria are not revealed.</p>
+
+<p class="dim">Limit: 3 attempts per IP per 24 hours. Choose your submissions carefully.</p>
+
+<textarea id="essay" placeholder="Begin..."></textarea>
+<div class="count">Words: <strong id="words">0</strong> &nbsp;&middot;&nbsp; Minimum: <strong>1,000</strong> &nbsp;&middot;&nbsp; Maximum: <strong>3,000</strong></div>
+<button id="submit-btn" onclick="submit()">SUBMIT FOR EVALUATION</button>
+
+<div class="feedback" id="feedback" style="display:none;"></div>
+
+<script>
+  const API_URL = 'https://purcellventures.co/api/prowess/apologetics-grader';
+  const essay = document.getElementById('essay');
+  const wordsEl = document.getElementById('words');
+  const submitBtn = document.getElementById('submit-btn');
+  const feedback = document.getElementById('feedback');
+
+  essay.addEventListener('input', () => {
+    const count = essay.value.trim().split(/\s+/).filter(Boolean).length;
+    wordsEl.textContent = count;
+    wordsEl.style.color = (count >= 1000 && count <= 3000) ? '#d4af37' : '#524d45';
+  });
+
+  async function submit() {
+    const text = essay.value.trim();
+    const count = text.split(/\s+/).filter(Boolean).length;
+    if (count < 1000) { alert('Minimum 1,000 words. Currently ' + count + '.'); return; }
+    if (count > 3000) { alert('Maximum 3,000 words. Currently ' + count + '.'); return; }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'EVALUATING...';
+    feedback.style.display = 'block';
+    feedback.textContent = 'Evaluating against the rubric...';
+
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ essay: text })
+      });
+      const data = await res.json();
+
+      if (data.error) {
+        feedback.innerHTML = '<strong>Error:</strong> ' + data.error;
+      } else {
+        let msg = '<strong>Score:</strong> ' + data.score + '/6\n\n' + (data.feedback || '');
+        if (data.passed && data.next) {
+          msg += '\n\n<strong>You may proceed.</strong>\n\nThe path is <a href="https://thebigjah.github.io/project-prowess/' + data.next + '/">/' + data.next + '/</a>';
+        } else {
+          msg += '\n\nYou may revise and resubmit. Maximum 3 attempts per 24 hours per IP.';
+        }
+        feedback.innerHTML = msg;
+      }
+    } catch (e) {
+      feedback.textContent = 'Evaluator offline. Try again later.';
+    }
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'SUBMIT FOR EVALUATION';
+  }
+</script>
+
+</body>
+</html>
