@@ -96,12 +96,12 @@ A 188-bit RSA public key and a ciphertext encrypted under that key. Recover the 
 </div>
 
 <div class="spec">
-The plaintext, written as a lowercase 16-character hexadecimal string with leading zeroes if needed, is the next path: <code>/prowess/&lt;plaintext_hex&gt;/</code>.
+The plaintext, written as a lowercase 16-character hexadecimal string with leading zeroes if needed, is the next path: <code>/project-prowess/&lt;plaintext_hex&gt;/</code>.
 </div>
 
 <div class="spec" style="color:var(--ink-faint);font-size:0.85rem;margin-top:2.5rem;line-height:2;">
 Hints if you need them:
-<br>· 188 bits is small enough that <code>sympy.factorint(n)</code> or <code>msieve</code> finishes in seconds
+<br>· 188 bits falls to a quadratic sieve: <code>msieve</code> or <code>yafu</code> takes seconds, and a pure-Python sieve such as <code>primefac.siqs(n)</code> takes a few minutes. <code>sympy.factorint(n)</code> is far slower.
 <br>· <code>factordb.com</code> may or may not have it cached. It won't always be there.
 <br>· No tricks beyond textbook RSA. Standard PKCS#1 v1.5 padding not used; the plaintext was encoded as a raw integer (hex-to-int).
 </div>
